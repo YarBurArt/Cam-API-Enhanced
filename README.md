@@ -18,11 +18,11 @@ Hack Cameras
 
 # CAM-HACKERS
 
-<img src="https://github.com/AngelSecurityTeam/Cam-Hackers/blob/master/cap01new.jpg">
+<img src="https://github.com/YarBurArt/Cam-API-Enhanced/blob/master/cap01new.jpg">
 
 # CAM-HACKERS
 
-<img src="https://github.com/AngelSecurityTeam/Cam-Hackers/blob/master/cap02new.jpg">
+<img src="https://github.com/YarBurArt/Cam-API-Enhanced/blob/master/cap02new.jpg">
 
 # CAM-HACKERS
 

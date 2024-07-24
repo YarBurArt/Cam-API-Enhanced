@@ -34,6 +34,7 @@ def save_ips_to_file(country_f, ips):
         for ip in ips:
             print("\n\033[1;31m", ip)
             f.write(f'{ip}\n')
+        print('\033[1;37m\n\033[37mSave File :'+country+'.txt')
 
 BASE_URL = "http://www.insecam.org/en/jsoncountries/"
 BYCOUNTRY_URL = "http://www.insecam.org/en/bycountry/"
@@ -43,13 +44,12 @@ data = json.loads(rsp)
 countries = data['countries']
 
 print("""
-\033[1;31m\033[1;37m ██████╗ █████╗ ███╗   ███╗      ██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗ ███████╗
-██╔════╝██╔══██╗████╗ ████║      ██║  ██║██╔══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗██╔════╝
-██║     ███████║██╔████╔██║█████╗███████║███████║██║     █████╔╝ █████╗  ██████╔╝███████╗
-██║     ██╔══██║██║╚██╔╝██║╚════╝██╔══██║██╔══██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗╚════██║
-╚██████╗██║  ██║██║ ╚═╝ ██║      ██║  ██║██║  ██║╚██████╗██║  ██╗███████╗██║  ██║███████║
-\033[1;31m ╚═════╝╚═╝  ╚═╝╚═╝     ╚═╝      ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝
-\033[1;31m                                                                        ANGELSECURITYTEAM \033[1;31m\033[1;37m""")
+\033[1;31m\033[1;37m  .--.                         .--. .---. .-.        .--.       .-.                               .-.  
+: .--'                       : .; :: .; :: :       : .--'      : :                               : :  
+: :    .--.  ,-.,-.,-. _____ :    ::  _.': : _____ : `;  ,-.,-.: `-.  .--.  ,-.,-. .--.  .--.  .-' :  
+: :__ ' .; ; : ,. ,. ::_____:: :: :: :   : ::_____:: :__ : ,. :: .. :' .; ; : ,. :'  ..'' '_.'' .; :  
+`.__.'`.__,_;:_;:_;:_;       :_;:_;:_;   :_;       `.__.':_;:_;:_;:_;`.__,_;:_;:_;`.__.'`.__.'`.__.'  
+\033[1;31m                                                    ANGELSECURITYTEAM (YarBurArt edition) \033[1;31m\033[1;37m""")
 
 for key, value in countries.items():
     print(f'Code : ({key}) - {value["country"]} / ({value["count"]})  \n')
@@ -72,12 +72,11 @@ except urllib.error.URLError as e:
 except UnicodeDecodeError as e:
     print(f"Error decoding data: {e}")
     sys.exit(1)
+except KeyboardInterrupt:
+    sys.exit(0)
 except Exception as e:
     print(e)
     print("\nSomething went wrong and now you have to deal with it, try python -v cam_hackers.py :)\n")
     sys.exit(1)
-
 finally:
-    print("\033[1;37m")
-    print('\033[37mSave File :'+country+'.txt')
     sys.exit(0)
