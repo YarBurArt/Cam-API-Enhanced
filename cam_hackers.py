@@ -1,6 +1,7 @@
 """
 Script module, just a console wrapper for the insecam.org handles,
-works with vanilla python3, tested with Python 3.11.2 and pypy3
+works with vanilla python3, tested with Python 3.11.2 
+and PyPy 7.3.11 with GCC 12.2.0
 github.com/AngelSecurityTeam/Cam-Hackers
 github.com/YarBurArt/Cam-API-Enhanced
 """
@@ -57,11 +58,11 @@ try:
     country = input("Code(##) : ")
     res = get_data(f"{BYCOUNTRY_URL}{country}")
     last_page = re.findall(
-        r'pagenavigator\("\?page=", (\d+)', res.text)[0]
+        r'pagenavigator\("\?page=", (\d+)', res)[0]
 
     for page in range(int(last_page)):
         res = get_data(f"{BYCOUNTRY_URL}{country}/?page={page}")
-        find_ip = re.findall(r"http://\d+.\d+.\d+.\d+:\d+", res.text)
+        find_ip = re.findall(r"http://\d+.\d+.\d+.\d+:\d+", res)
 
         save_ips_to_file(country, find_ip)
 
@@ -70,6 +71,10 @@ except urllib.error.URLError as e:
     sys.exit(1)
 except UnicodeDecodeError as e:
     print(f"Error decoding data: {e}")
+    sys.exit(1)
+except Exception as e:
+    print(e)
+    print("\nSomething went wrong and now you have to deal with it, try python -v cam_hackers.py :)\n")
     sys.exit(1)
 
 finally:
