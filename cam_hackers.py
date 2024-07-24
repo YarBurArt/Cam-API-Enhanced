@@ -5,7 +5,6 @@ import sys
 import re
 import urllib.request
 import json
-import requests
 
 def get_data(url, headers):
     req = urllib.request.Request(url, headers=headers)
@@ -53,9 +52,7 @@ try:
     last_page = re.findall(r'pagenavigator\("\?page=", (\d+)', res.text)[0]
 
     for page in range(int(last_page)):
-        res = requests.get(
-            f"http://www.insecam.org/en/bycountry/{country}/?page={page}",
-            headers=headers, timeout=5)
+        res = get_data(f"http://www.insecam.org/en/bycountry/{country}/?page={page}", headers=headers)
         find_ip = re.findall(r"http://\d+.\d+.\d+.\d+:\d+", res.text)
 
         save_ips_to_file(country, find_ip)
