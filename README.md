@@ -28,11 +28,11 @@ python3 cam_hackers.py
 
 # CAM-HACKERS
 
-<img src="https://github.com/AngelSecurityTeam/Cam-Hackers/blob/master/camfoto.png">
+<img src="https://github.com/YarBurArt/Cam-API-Enhanced/blob/master/camfoto.png">
 
 # CAM-HACKERS
 
-<img src="https://github.com/AngelSecurityTeam/Cam-Hackers/blob/master/camfoto2.png">
+<img src="https://github.com/YarBurArt/Cam-API-Enhanced/blob/master/camfoto2.png">
 
 But the base and the idea is still with these authors
 
