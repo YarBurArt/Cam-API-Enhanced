@@ -1,6 +1,6 @@
 """
 Script module, just a console wrapper for the insecam.org handles,
-works with vanilla python3, tested with Python 3.11.2 
+works with vanilla python3, tested with Python 3.11.2
 and PyPy 7.3.11 with GCC 12.2.0
 github.com/AngelSecurityTeam/Cam-Hackers
 github.com/YarBurArt/Cam-API-Enhanced
@@ -12,71 +12,90 @@ import re
 import urllib.request
 import urllib.error
 import json
+import html
+
+BASE_URL = "http://www.insecam.org/en/jsoncountries/"
+BYCOUNTRY_URL = "http://www.insecam.org/en/bycountry/"
 
 
 def get_data(url):
     """ obtain data for analysis purposes """
     headers = {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,"
+                  "image/avif,image/webp,image/apng,*/*;q=0.8,"
+                  "application/signed-exchange;v=b3;q=0.7",
         "Cache-Control": "max-age=0",
         "Connection": "keep-alive",
         "Host": "www.insecam.org",
         "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                      "AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/110.0.0.0 Safari/537.36"
     }
     req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req) as resp:
         return resp.read().decode('utf-8')
 
-def save_ips_to_file(country_f, ips):
+
+def save_ips_to_file(country_f, ips, cities):
     """ archive IP addresses for record-keeping """
-    with open(f'{country_f}.txt', 'w', encoding="utf-8") as f:
-        for ip in ips:
-            print("\n\033[1;31m", ip)
+    with open(f'{country_f}.txt', 'a', encoding="utf-8") as f:
+        for ip, city in zip(ips, cities):
+            print("\n\033[1;31m", ip, "\033[1;37m", city)
             f.write(f'{ip}\n')
-        print('\033[1;37m\n\033[37mSave File :'+country+'.txt')
+        print('\033[1;37m\n\033[37mSave File :'+country_f+'.txt')
 
-BASE_URL = "http://www.insecam.org/en/jsoncountries/"
-BYCOUNTRY_URL = "http://www.insecam.org/en/bycountry/"
 
-rsp = get_data(BASE_URL)
-data = json.loads(rsp)
-countries = data['countries']
+def banner():
+    print("""
+    \033[1;31m\033[1;37m  .--.                         .--. .---. .-.        .--.       .-.                               .-.  
+    : .--'                       : .; :: .; :: :       : .--'      : :                               : :  
+    : :    .--.  ,-.,-.,-. _____ :    ::  _.': : _____ : `;  ,-.,-.: `-.  .--.  ,-.,-. .--.  .--.  .-' :  
+    : :__ ' .; ; : ,. ,. ::_____:: :: :: :   : ::_____:: :__ : ,. :: .. :' .; ; : ,. :'  ..'' '_.'' .; :  
+    `.__.'`.__,_;:_;:_;:_;       :_;:_;:_;   :_;       `.__.':_;:_;:_;:_;`.__,_;:_;:_;`.__.'`.__.'`.__.'  
+    \033[1;31m                                                    ANGELSECURITYTEAM (YarBurArt edition) \033[1;31m\033[1;37m""")
 
-print("""
-\033[1;31m\033[1;37m  .--.                         .--. .---. .-.        .--.       .-.                               .-.  
-: .--'                       : .; :: .; :: :       : .--'      : :                               : :  
-: :    .--.  ,-.,-.,-. _____ :    ::  _.': : _____ : `;  ,-.,-.: `-.  .--.  ,-.,-. .--.  .--.  .-' :  
-: :__ ' .; ; : ,. ,. ::_____:: :: :: :   : ::_____:: :__ : ,. :: .. :' .; ; : ,. :'  ..'' '_.'' .; :  
-`.__.'`.__,_;:_;:_;:_;       :_;:_;:_;   :_;       `.__.':_;:_;:_;:_;`.__,_;:_;:_;`.__.'`.__.'`.__.'  
-\033[1;31m                                                    ANGELSECURITYTEAM (YarBurArt edition) \033[1;31m\033[1;37m""")
 
-for key, value in countries.items():
-    print(f'Code : ({key}) - {value["country"]} / ({value["count"]})  \n')
+def main():
+    rsp = get_data(BASE_URL)
+    data = json.loads(rsp)
+    countries = data['countries']
 
-try:
-    country = input("Code(##) : ")
-    res = get_data(f"{BYCOUNTRY_URL}{country}")
-    last_page = re.findall(
-        r'pagenavigator\("\?page=", (\d+)', res)[0]
+    for key, value in countries.items():
+        print(f'Code : ({key}) - {value["country"]} / ({value["count"]})  \n')
 
-    for page in range(int(last_page)):
-        res = get_data(f"{BYCOUNTRY_URL}{country}/?page={page}")
-        find_ip = re.findall(r"http://\d+.\d+.\d+.\d+:\d+", res)
+    try:
+        country = input("Code(##) : ")
+        open(f'{country}.txt', 'w', encoding='utf-8').close()  # clear file
+        res = get_data(f"{BYCOUNTRY_URL}{country}")
+        last_page = re.findall(
+            r'pagenavigator\("\?page=", (\d+)', res)[0]
 
-        save_ips_to_file(country, find_ip)
+        for page in range(int(last_page)):
+            res = get_data(f"{BYCOUNTRY_URL}{country}/?page={page}")
+            # we assume that all the IP / cities are in the same order
+            find_ip = re.findall(r"http://\d+.\d+.\d+.\d+:\d+", res)
+            find_c_r = re.findall(r'title="[^"]*?\bin\s+([^,"]+)', res)[1::2]
+            find_city = [html.unescape(i) for i in find_c_r]
+            save_ips_to_file(country, find_ip, find_city)
 
-except urllib.error.URLError as e:
-    print(f"Error accessing URL: {e}")
-    sys.exit(1)
-except UnicodeDecodeError as e:
-    print(f"Error decoding data: {e}")
-    sys.exit(1)
-except KeyboardInterrupt:
-    sys.exit(0)
-except Exception as e:
-    print(e)
-    print("\nSomething went wrong and now you have to deal with it, try python -v cam_hackers.py :)\n")
-    sys.exit(1)
-finally:
-    sys.exit(0)
+    except urllib.error.URLError as e:
+        print(f"Error accessing URL: {e}")
+        sys.exit(1)
+    except UnicodeDecodeError as e:
+        print(f"Error decoding data: {e}")
+        sys.exit(1)
+    except KeyboardInterrupt:
+        sys.exit(0)
+    except Exception as e:
+        print(e)
+        print("\nSomething went wrong and now you have to deal with it, "
+              "try python -v cam_hackers.py :)\n")
+        sys.exit(1)
+    finally:
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    banner()
+    main()
